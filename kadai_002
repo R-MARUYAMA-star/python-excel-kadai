@@ -1,0 +1,42 @@
+# 成功したやつ
+
+import pandas as pd
+
+# データフレームの作成
+df = pd.DataFrame({
+    '日付':
+      ['2023-05-17', '2023-05-18', '2023-05-19', '2023-05-20', '2023-05-21'],
+    '社員名': ['山田', '佐藤', '鈴木', '田中', '高橋'],
+    '売上': [100,200,150,300,250],
+    '部門':['メーカー','代理店','メーカー','商社','代理店'],
+})
+
+# 「値段」列の平均値を計算する
+mean = df['売上'].mean()
+
+# 優先レベルの平均を求めて新しい列を作成
+df['平均売上'] = df['売上'].mean()
+
+# 優先レベルで分岐して緊急度を求める関数「performance」を定義★★平均を条件式にどう入れればよいのかわからなかった
+def performance(level):
+  result = ''
+  if level >= mean+50:
+    result = 'Ａ'
+  elif level>= mean:
+    result = 'Ｂ'
+  else:
+    result = 'Ｃ'
+  return result
+
+# 「緊急度」列を作成し、関数「prioritize」を適用して値を設定
+df['業績ランク'] = df['売上'].apply(performance)
+
+
+# Excelファイルを作成
+writer = pd.ExcelWriter('業績.xlsx')
+
+# DataFrameオブジェクトをExcelファイルに書き込む
+df.to_excel(writer, sheet_name='Sheet1', index=False)
+
+# Excelファイルを閉じる
+writer.close()
